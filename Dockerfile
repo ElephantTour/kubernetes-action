@@ -2,6 +2,12 @@ ARG ALPINE_VERSION=3.19
 ARG KUBECTL_VERSION=1.15.10
 FROM python:3.11-alpine${ALPINE_VERSION} as builder
 
+# kube
+RUN curl -L -o /usr/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl
+RUN chmod +x /usr/bin/kubectl
+RUN chmod +x entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
+
 ARG AWS_CLI_VERSION=2.15.0
 RUN apk add --no-cache git unzip groff build-base libffi-dev cmake py-pip curl
 RUN git clone --single-branch --depth 1 -b ${AWS_CLI_VERSION} https://github.com/aws/aws-cli.git
@@ -19,10 +25,6 @@ RUN rm -rf \
 RUN find /usr/local/lib/aws-cli/awscli/data -name completions-1*.json -delete
 RUN find /usr/local/lib/aws-cli/awscli/botocore/data -name examples-1.json -delete
 RUN (cd /usr/local/lib/aws-cli; for a in *.so*; do test -f /lib/$a && rm $a; done)
-RUN curl -L -o /usr/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl
-RUN chmod +x /usr/bin/kubectl
-RUN chmod +x entrypoint.sh
-COPY entrypoint.sh /entrypoint.sh
 
 # build the final image
 FROM alpine:${ALPINE_VERSION}
