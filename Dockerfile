@@ -2,11 +2,7 @@ ARG ALPINE_VERSION=3.19
 ARG KUBECTL_VERSION=1.15.10
 FROM python:3.11-alpine${ALPINE_VERSION} as builder
 
-# kube
-RUN curl -L -o /usr/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl
-RUN chmod +x /usr/bin/kubectl
-RUN chmod +x entrypoint.sh
-COPY entrypoint.sh /entrypoint.sh
+
 
 ARG AWS_CLI_VERSION=2.15.0
 RUN apk add --no-cache git unzip groff build-base libffi-dev cmake py-pip curl
@@ -16,6 +12,14 @@ WORKDIR aws-cli
 RUN ./configure --with-install-type=portable-exe --with-download-deps
 RUN make
 RUN make install
+
+# kube
+RUN curl -L -o /usr/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl
+RUN chmod +x /usr/bin/kubectl
+RUN chmod +x entrypoint.sh
+RUN pwd
+RUN ls -ltrh
+COPY entrypoint.sh /entrypoint.sh
 
 # reduce image size: remove autocomplete and examples
 RUN rm -rf \
