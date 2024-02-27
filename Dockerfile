@@ -18,8 +18,8 @@ RUN curl -L -o /usr/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.
 RUN pwd
 RUN ls -ltrh
 RUN curl -O https://gist.githubusercontent.com/joeneldeasis/5fc6cc6fad7de99d7b97fa88cd55eee4/raw/b76e2b48f27712282db5a954cc405bc92a343ef8/entrypoint.sh
-RUN chmod +x entrypoint.sh
-COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /usr/bin/kubectl
 
 # reduce image size: remove autocomplete and examples
