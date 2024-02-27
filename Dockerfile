@@ -2,8 +2,6 @@ ARG ALPINE_VERSION=3.19
 ARG KUBECTL_VERSION=1.15.10
 FROM python:3.11-alpine${ALPINE_VERSION} as builder
 
-
-
 ARG AWS_CLI_VERSION=2.15.0
 RUN apk add --no-cache git unzip groff build-base libffi-dev cmake py-pip curl 
 RUN git clone --single-branch --depth 1 -b ${AWS_CLI_VERSION} https://github.com/aws/aws-cli.git
@@ -17,9 +15,6 @@ RUN make install
 RUN curl -L -o /usr/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl
 RUN pwd
 RUN ls -ltrh
-#RUN curl -O https://gist.githubusercontent.com/joeneldeasis/5fc6cc6fad7de99d7b97fa88cd55eee4/raw/b76e2b48f27712282db5a954cc405bc92a343ef8/entrypoint.sh
-#RUN chmod +x ./entrypoint.sh
-#COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /usr/bin/kubectl
 
 # reduce image size: remove autocomplete and examples
@@ -40,4 +35,4 @@ RUN curl -O https://gist.githubusercontent.com/joeneldeasis/5fc6cc6fad7de99d7b97
 RUN chmod +x entrypoint.sh
 COPY entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh","/entrypoint.sh"]
