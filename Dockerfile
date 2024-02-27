@@ -11,12 +11,6 @@ RUN ./configure --with-install-type=portable-exe --with-download-deps
 RUN make
 RUN make install
 
-# kube
-RUN curl -L -o /usr/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl
-RUN pwd
-RUN ls -ltrh
-RUN chmod +x /usr/bin/kubectl
-
 # reduce image size: remove autocomplete and examples
 RUN rm -rf \
     /usr/local/lib/aws-cli/aws_completer \
@@ -34,6 +28,8 @@ RUN ln -s /usr/local/lib/aws-cli/aws /usr/local/bin/aws
 RUN apk add --no-cache curl
 RUN curl -O https://gist.githubusercontent.com/joeneldeasis/5fc6cc6fad7de99d7b97fa88cd55eee4/raw/b76e2b48f27712282db5a954cc405bc92a343ef8/entrypoint.sh
 RUN chmod +x entrypoint.sh
+RUN curl -L -o /usr/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl
+RUN chmod +x /usr/bin/kubectl
 COPY entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/bin/sh","/entrypoint.sh"]
